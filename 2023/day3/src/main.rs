@@ -91,24 +91,30 @@ fn part2(input: &Input) -> Output {
     let mut gears = HashMap::<(i64, i64), Vec<i64>>::new();
     for (y, line) in input.iter().enumerate() {
         let mut n: Option<i64> = None;
-        let mut gear: Option<(i64, i64)> = None;
+        let mut gear = HashSet::new();
         for (x, c) in line.iter().enumerate() {
             if let Some(d) = c.to_digit(10) {
                 n = Some(n.unwrap_or_default() * 10 + d as i64);
                 for &(dx, dy) in NEIGHBOURS.iter() {
                     let p = (x as i64 + dx, y as i64 + dy);
                     if gear_loc.contains(&p) {
-                        gear = Some(p)
+                        gear.insert(p);
                     }
                 }
             } else {
-                if let Some(p) = gear {
-                    gears.entry(p).or_default().push(n.unwrap())
+                assert!(gear.len() <= 1);
+                if let Some(p) = gear.iter().next() {
+                    gears.entry(*p).or_default().push(n.unwrap())
                 }
 
-                gear = None;
+                gear = HashSet::new();
                 n = None;
             }
+        }
+
+        assert!(gear.len() <= 1);
+        if let Some(p) = gear.iter().next() {
+            gears.entry(*p).or_default().push(n.unwrap())
         }
     }
 
