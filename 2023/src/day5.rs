@@ -1,20 +1,10 @@
 use eyre::Result;
 use std::cmp::{max, min};
-use std::collections::HashSet;
-use std::fs::File;
-use std::io::prelude::*;
-
-fn read_file(path: &str) -> Result<String> {
-    let mut file = File::open(path)?;
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
-    Ok(contents)
-}
 
 type Input = (Vec<i64>, Vec<Vec<Vec<i64>>>);
 type Output = i64;
 
-fn parse(input: &str) -> Result<Input> {
+pub fn parse(input: &str) -> Result<Input> {
     let mut lines = input.lines();
 
     let seeds = lines
@@ -23,7 +13,6 @@ fn parse(input: &str) -> Result<Input> {
         .split_once(':')
         .unwrap()
         .1
-        .trim()
         .split_whitespace()
         .map(|s| s.parse().unwrap())
         .collect();
@@ -54,22 +43,7 @@ fn parse(input: &str) -> Result<Input> {
     Ok((seeds, maps))
 }
 
-fn main() -> Result<()> {
-    let test = parse(&read_file("test.txt")?)?;
-    println!("{:?}", test);
-
-    let input = parse(&read_file("input.txt")?)?;
-
-    assert!(dbg!(part1(&test)) == 35);
-    println!("part1: {}", part1(&input));
-
-    assert!(dbg!(part2(&test)) == 46);
-    println!("part2: {}", part2(&input));
-
-    Ok(())
-}
-
-fn part1(input: &Input) -> Output {
+pub fn part1(input: &Input) -> Output {
     input
         .0
         .iter()
@@ -85,7 +59,7 @@ fn part1(input: &Input) -> Output {
         .unwrap()
 }
 
-fn part2(input: &Input) -> Output {
+pub fn part2(input: &Input) -> Output {
     let ranges = input
         .0
         .chunks_exact(2)
@@ -126,4 +100,22 @@ fn part2(input: &Input) -> Output {
         .map(|x| x.0)
         .min()
         .unwrap()
+}
+
+#[test]
+fn test() -> Result<()> {
+    use crate::read_file;
+
+    let test = parse(&read_file("day5/test.txt")?)?;
+    println!("{:?}", test);
+
+    let input = parse(&read_file("day5/input.txt")?)?;
+
+    assert!(part1(&test) == 35);
+    println!("part1: {}", part1(&input));
+
+    assert!(part2(&test) == 46);
+    println!("part2: {}", part2(&input));
+
+    Ok(())
 }

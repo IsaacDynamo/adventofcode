@@ -1,21 +1,10 @@
 use eyre::Result;
-use std::cmp::{max, min};
-use std::collections::HashSet;
 use std::fmt::Write;
-use std::fs::File;
-use std::io::prelude::*;
-
-fn read_file(path: &str) -> Result<String> {
-    let mut file = File::open(path)?;
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
-    Ok(contents)
-}
 
 type Input = (Vec<i64>, Vec<i64>);
 type Output = i64;
 
-fn parse(input: &str) -> Result<Input> {
+pub fn parse(input: &str) -> Result<Input> {
     let mut lines = input.lines();
 
     let time = lines
@@ -24,7 +13,6 @@ fn parse(input: &str) -> Result<Input> {
         .split_once(':')
         .unwrap()
         .1
-        .trim()
         .split_whitespace()
         .map(|s| s.parse().unwrap())
         .collect();
@@ -35,7 +23,6 @@ fn parse(input: &str) -> Result<Input> {
         .split_once(':')
         .unwrap()
         .1
-        .trim()
         .split_whitespace()
         .map(|s| s.parse().unwrap())
         .collect();
@@ -43,22 +30,7 @@ fn parse(input: &str) -> Result<Input> {
     Ok((time, distance))
 }
 
-fn main() -> Result<()> {
-    let test = parse(&read_file("test.txt")?)?;
-    println!("{:?}", test);
-
-    let input = parse(&read_file("input.txt")?)?;
-
-    assert!(dbg!(part1(&test)) == 288);
-    println!("part1: {}", part1(&input));
-
-    assert!(dbg!(part2(&test)) == 71503);
-    println!("part2: {}", part2(&input));
-
-    Ok(())
-}
-
-fn part1(input: &Input) -> Output {
+pub fn part1(input: &Input) -> Output {
     input
         .0
         .iter()
@@ -67,7 +39,7 @@ fn part1(input: &Input) -> Output {
         .product()
 }
 
-fn part2(input: &Input) -> Output {
+pub fn part2(input: &Input) -> Output {
     let time = input
         .0
         .iter()
@@ -89,4 +61,22 @@ fn part2(input: &Input) -> Output {
         .unwrap();
 
     part1(&(vec![time], vec![dist]))
+}
+
+#[test]
+fn test() -> Result<()> {
+    use crate::read_file;
+
+    let test = parse(&read_file("day6/test.txt")?)?;
+    println!("{:?}", test);
+
+    let input = parse(&read_file("day6/input.txt")?)?;
+
+    assert!(part1(&test) == 288);
+    println!("part1: {}", part1(&input));
+
+    assert!(part2(&test) == 71503);
+    println!("part2: {}", part2(&input));
+
+    Ok(())
 }

@@ -1,35 +1,11 @@
 use eyre::Result;
 use std::collections::{HashMap, HashSet};
-use std::fs::File;
-use std::io::prelude::*;
-
-fn read_file(path: &str) -> Result<String> {
-    let mut file = File::open(path)?;
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
-    Ok(contents)
-}
 
 type Input = Vec<Vec<char>>;
 type Output = i64;
 
-fn parse(input: &str) -> Result<Input> {
+pub fn parse(input: &str) -> Result<Input> {
     Ok(input.lines().map(|line| line.chars().collect()).collect())
-}
-
-fn main() -> Result<()> {
-    let test = parse(&read_file("test.txt")?)?;
-    println!("{:?}", test);
-
-    let input = parse(&read_file("input.txt")?)?;
-
-    assert!(dbg!(part1(&test)) == 4361);
-    println!("part1: {}", part1(&input));
-
-    assert!(dbg!(part2(&test)) == 467835);
-    println!("part2: {}", part2(&input));
-
-    Ok(())
 }
 
 static NEIGHBOURS: [(i64, i64); 8] = [
@@ -43,13 +19,13 @@ static NEIGHBOURS: [(i64, i64); 8] = [
     (1, 1),
 ];
 
-fn part1(input: &Input) -> Output {
+pub fn part1(input: &Input) -> Output {
     let grid = input
         .iter()
         .enumerate()
         .flat_map(|(y, line)| {
             line.iter().enumerate().filter_map(move |(x, c)| {
-                (*c != '.' && !c.is_ascii_digit()).then(|| ((x as i64, y as i64), *c))
+                (*c != '.' && !c.is_ascii_digit()).then_some(((x as i64, y as i64), *c))
             })
         })
         .collect::<HashMap<(i64, i64), char>>();
@@ -77,14 +53,14 @@ fn part1(input: &Input) -> Output {
     sum
 }
 
-fn part2(input: &Input) -> Output {
+pub fn part2(input: &Input) -> Output {
     let gear_loc = input
         .iter()
         .enumerate()
         .flat_map(|(y, line)| {
             line.iter()
                 .enumerate()
-                .filter_map(move |(x, c)| (*c == '*').then(|| (x as i64, y as i64)))
+                .filter_map(move |(x, c)| (*c == '*').then_some((x as i64, y as i64)))
         })
         .collect::<HashSet<(i64, i64)>>();
 
@@ -122,4 +98,22 @@ fn part2(input: &Input) -> Output {
         .iter()
         .filter_map(|(_, numbers)| (numbers.len() == 2).then(|| numbers.iter().product::<i64>()))
         .sum()
+}
+
+#[test]
+fn test() -> Result<()> {
+    use crate::read_file;
+
+    let test = parse(&read_file("day3/test.txt")?)?;
+    println!("{:?}", test);
+
+    let input = parse(&read_file("day3/input.txt")?)?;
+
+    assert!(part1(&test) == 4361);
+    println!("part1: {}", part1(&input));
+
+    assert!(part2(&test) == 467835);
+    println!("part2: {}", part2(&input));
+
+    Ok(())
 }

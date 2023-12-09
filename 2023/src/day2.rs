@@ -1,31 +1,22 @@
 use eyre::Result;
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::prelude::*;
-
-fn read_file(path: &str) -> Result<String> {
-    let mut file = File::open(path)?;
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
-    Ok(contents)
-}
 
 type Input = Vec<(i64, Vec<HashMap<String, i64>>)>;
 type Output = i64;
 
-fn parse(input: &str) -> Result<Input> {
+pub fn parse(input: &str) -> Result<Input> {
     Ok(input
         .lines()
         .map(|s| {
-            let (game, sets) = s.split_once(":").unwrap();
+            let (game, sets) = s.split_once(':').unwrap();
             let n = game.strip_prefix("Game ").unwrap().parse::<i64>().unwrap();
             let s = sets
-                .split(";")
+                .split(';')
                 .map(|elements| {
                     elements
-                        .split(",")
+                        .split(',')
                         .map(|element| {
-                            let (n, color) = element.trim().split_once(" ").unwrap();
+                            let (n, color) = element.trim().split_once(' ').unwrap();
                             (color.to_string(), n.parse().unwrap())
                         })
                         .collect::<HashMap<String, i64>>()
@@ -36,22 +27,7 @@ fn parse(input: &str) -> Result<Input> {
         .collect())
 }
 
-fn main() -> Result<()> {
-    let test = parse(&read_file("test.txt")?)?;
-    println!("{:?}", test);
-
-    let input = parse(&read_file("input.txt")?)?;
-
-    assert!(dbg!(part1(&test)) == 8);
-    println!("part1: {}", part1(&input));
-
-    assert!(dbg!(part2(&test)) == 2286);
-    println!("part2: {}", part2(&input));
-
-    Ok(())
-}
-
-fn part1(input: &Input) -> Output {
+pub fn part1(input: &Input) -> Output {
     let bag = [("red", 12), ("green", 13), ("blue", 14)];
     input
         .iter()
@@ -62,12 +38,12 @@ fn part1(input: &Input) -> Output {
                     bag.iter()
                         .all(|(name, n)| set.get(*name).copied().unwrap_or(0) <= *n)
                 })
-                .then(|| game.0)
+                .then_some(game.0)
         })
         .sum()
 }
 
-fn part2(input: &Input) -> Output {
+pub fn part2(input: &Input) -> Output {
     input
         .iter()
         .map(|game| {
@@ -88,4 +64,22 @@ fn part2(input: &Input) -> Output {
                 .product::<i64>()
         })
         .sum()
+}
+
+#[test]
+fn test() -> Result<()> {
+    use crate::read_file;
+
+    let test = parse(&read_file("day2/test.txt")?)?;
+    println!("{:?}", test);
+
+    let input = parse(&read_file("day2/input.txt")?)?;
+
+    assert!(part1(&test) == 8);
+    println!("part1: {}", part1(&input));
+
+    assert!(part2(&test) == 2286);
+    println!("part2: {}", part2(&input));
+
+    Ok(())
 }
