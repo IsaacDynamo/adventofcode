@@ -1,9 +1,10 @@
+use colored::*;
 use eyre::Result;
 use std::fs::File;
 use std::io::prelude::*;
-use colored::*;
 
 mod day1;
+mod day10;
 mod day2;
 mod day3;
 mod day4;
@@ -67,6 +68,20 @@ fn main() -> Result<()> {
     star!(day9::part1(&input), 1934898178);
     star!(day9::part2(&input), 1129);
 
+    let input = day10::parse(&read_file("day10/input.txt")?)?;
+    star!(day10::part1(&input), 6682);
+    star!(day10::part2(&input), 353);
+
+    println!();
+
+    // Print scale
+    for i in 1..=50 {
+        if i % 10 == 0 {
+            print!("^")
+        } else {
+            print!(" ")
+        }
+    }
     println!();
 
     Ok(())
