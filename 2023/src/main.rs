@@ -5,6 +5,7 @@ use std::io::prelude::*;
 
 mod day1;
 mod day10;
+mod day11;
 mod day2;
 mod day3;
 mod day4;
@@ -71,6 +72,10 @@ fn main() -> Result<()> {
     let input = day10::parse(&read_file("day10/input.txt")?)?;
     star!(day10::part1(&input), 6682);
     star!(day10::part2(&input), 353);
+
+    let input = day11::parse(&read_file("day11/input.txt")?)?;
+    star!(day11::part1(&input), 9536038);
+    star!(day11::part2(&input), 447744640566);
 
     println!();
 
