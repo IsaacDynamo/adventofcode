@@ -8,6 +8,7 @@ mod day10;
 mod day11;
 mod day12;
 mod day13;
+mod day14;
 mod day2;
 mod day3;
 mod day4;
@@ -86,6 +87,10 @@ fn main() -> Result<()> {
     let input = day13::parse(&read_file("day13/input.txt")?)?;
     star!(day13::part1(&input), 34911);
     star!(day13::part2(&input), 33183);
+
+    let input = day14::parse(&read_file("day14/input.txt")?)?;
+    star!(day14::part1(&input), 113486);
+    star!(day14::part2(&input), 104409);
 
     println!();
 
