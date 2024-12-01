@@ -1,0 +1,9 @@
+[package]
+name = "adventofcode2024"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+colored = "2.1.0"
+eyre = "0.6.12"
+num = "0.4.3"
