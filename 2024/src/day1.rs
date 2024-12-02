@@ -11,7 +11,7 @@ pub fn parse(input: &str) -> Result<Input> {
         .lines()
         .map(|s| {
             s.split_ascii_whitespace()
-                .map(|s| s.parse::<i64>().map_err(|e| Report::from(e)))
+                .map(|s| s.parse::<i64>().map_err(Report::from))
                 .collect::<Result<Vec<_>>>()
         })
         .collect::<Result<_>>()?;
