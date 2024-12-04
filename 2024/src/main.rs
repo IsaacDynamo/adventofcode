@@ -6,6 +6,7 @@ use std::io::stdout;
 
 mod day1;
 mod day2;
+mod day3;
 
 pub fn read_file(path: &str) -> Result<String> {
     let mut file = File::open(path)?;
@@ -38,6 +39,13 @@ fn main() -> Result<()> {
         let input = day::parse(&read_file("input/day2/input.txt")?)?;
         star!(day::part1(&input), 559);
         star!(day::part2(&input), 601);
+    }
+
+    {
+        use day3 as day;
+        let input = day::parse(&read_file("input/day3/input.txt")?)?;
+        star!(day::part1(&input), 171183089);
+        star!(day::part2(&input), 63866497);
     }
 
     println!();
