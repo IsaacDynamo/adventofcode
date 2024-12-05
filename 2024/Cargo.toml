@@ -4,7 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+bimap = "0.6.3"
 colored = "2.1.0"
 eyre = "0.6.12"
 num = "0.4.3"
+petgraph = "0.6.5"
 regex = "1.11.1"
