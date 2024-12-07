@@ -10,6 +10,8 @@ mod day2;
 mod day3;
 mod day4;
 mod day5;
+mod day6;
+mod day7;
 
 pub fn read_file(path: &str) -> Result<String> {
     let mut file = File::open(path)?;
@@ -18,7 +20,7 @@ pub fn read_file(path: &str) -> Result<String> {
     Ok(contents)
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Grid<T> {
     data: Vec<Vec<T>>,
 }
@@ -42,6 +44,16 @@ impl<T: Copy> Grid<T> {
             let x: usize = x.try_into().unwrap();
             let y: usize = y.try_into().unwrap();
             self.data.get(y).and_then(|v: &Vec<T>| v.get(x)).copied()
+        }
+    }
+
+    pub fn get_mut(&mut self, x: i64, y: i64) -> Option<&mut T> {
+        if x < 0 || y < 0 {
+            None
+        } else {
+            let x: usize = x.try_into().unwrap();
+            let y: usize = y.try_into().unwrap();
+            self.data.get_mut(y).and_then(|v: &mut Vec<T>| v.get_mut(x))
         }
     }
 
@@ -110,6 +122,20 @@ fn main() -> Result<()> {
         let input = day::parse(&read_file("input/day5/input.txt")?)?;
         star!(day::part1(&input), 6051);
         star!(day::part2(&input), 5093);
+    }
+
+    {
+        use day6 as day;
+        let input = day::parse(&read_file("input/day6/input.txt")?)?;
+        star!(day::part1(&input), 5199);
+        star!(day::part2(&input), 1915);
+    }
+
+    {
+        use day7 as day;
+        let input = day::parse(&read_file("input/day7/input.txt")?)?;
+        star!(day::part1(&input), 1153997401072);
+        star!(day::part2(&input), 97902809384118);
     }
 
     println!();
