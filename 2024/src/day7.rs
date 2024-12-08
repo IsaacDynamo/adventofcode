@@ -42,7 +42,7 @@ fn search1(acc: i64, digits: &[i64], result: i64) -> bool {
 pub fn part1(input: &Input) -> Output {
     input.iter()
         .filter_map(|(result, digits)| {
-            (search1(0, digits, *result)).then_some(result)
+            (search1(digits[0], &digits[1..], *result)).then_some(result)
         }).sum()
 }
 
@@ -56,7 +56,7 @@ fn search2(acc: i64, numbers: &[i64], result: i64) -> bool {
     }
 
     fn concat(a: i64, b: i64) -> i64 {
-        let digits = a.to_f64().unwrap().log10().floor() + 1.0;
+        let digits = b.to_f64().unwrap().log10().floor() + 1.0;
         let n = 10_f64.powf(digits).to_i64().unwrap();
         a * n + b
     }
@@ -69,7 +69,7 @@ fn search2(acc: i64, numbers: &[i64], result: i64) -> bool {
 pub fn part2(input: &Input) -> Output {
     input.iter()
         .filter_map(|(result, digits)| {
-            (search2(0, digits, *result)).then_some(result)
+            (search2(digits[0], &digits[1..], *result)).then_some(result)
         }).sum()
 }
 
