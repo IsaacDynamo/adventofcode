@@ -13,6 +13,8 @@ mod day5;
 mod day6;
 mod day7;
 mod day8;
+mod day9;
+mod day10;
 
 pub fn read_file(path: &str) -> Result<String> {
     let mut file = File::open(path)?;
@@ -144,6 +146,20 @@ fn main() -> Result<()> {
         let input = day::parse(&read_file("input/day8/input.txt")?)?;
         star!(day::part1(&input), 423);
         star!(day::part2(&input), 1287);
+    }
+
+    {
+        use day9 as day;
+        let input = day::parse(&read_file("input/day9/input.txt")?)?;
+        star!(day::part1(&input), 6225730762521);
+        star!(day::part2(&input), 6250605700557);
+    }
+
+    {
+        use day10 as day;
+        let input = day::parse(&read_file("input/day10/input.txt")?)?;
+        star!(day::part1(&input), 514);
+        star!(day::part2(&input), 1162);
     }
 
     println!();
