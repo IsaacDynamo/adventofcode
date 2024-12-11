@@ -3,7 +3,6 @@ use eyre::Result;
 use std::fmt::Debug;
 use std::fs::File;
 use std::io::prelude::*;
-use std::io::stdout;
 
 mod day1;
 mod day2;
@@ -15,6 +14,7 @@ mod day7;
 mod day8;
 mod day9;
 mod day10;
+mod day11;
 
 pub fn read_file(path: &str) -> Result<String> {
     let mut file = File::open(path)?;
@@ -81,13 +81,25 @@ pub static DIR: [(i64, i64); 8] = [
 ];
 
 macro_rules! star {
-    ($a:expr , $b:expr) => {
-        if $a == $b {
-            print!("{}", "*".bright_yellow());
-        } else {
-            print!("_");
+    ($day:expr, $a:expr, $b:expr, $c:expr , $d:expr) => {
+
+        let start = std::time::Instant::now();
+        let part1_result = $a == $b;
+        let part1_duration = start.elapsed();
+
+        let start = std::time::Instant::now();
+        let part2_result = $c == $d;
+        let part2_duration = start.elapsed();
+
+        fn token(result: bool) -> ColoredString {
+            if result {
+                "*".bright_yellow()
+            } else {
+                "_".into()
+            }
         }
-        _ = stdout().flush();
+
+        println!("{:>2} {:>12?} {} {:>12?} {}", $day, part1_duration, token(part1_result), part2_duration, token(part2_result));
     };
 }
 
@@ -95,84 +107,68 @@ fn main() -> Result<()> {
     {
         use day1 as day;
         let input = day::parse(&read_file("input/day1/input.txt")?)?;
-        star!(day::part1(&input), 2066446);
-        star!(day::part2(&input), 24931009);
+        star!(1, day::part1(&input), 2066446, day::part2(&input), 24931009);
     }
 
     {
         use day2 as day;
         let input = day::parse(&read_file("input/day2/input.txt")?)?;
-        star!(day::part1(&input), 559);
-        star!(day::part2(&input), 601);
+        star!(2, day::part1(&input), 559, day::part2(&input), 601);
     }
 
     {
         use day3 as day;
         let input = day::parse(&read_file("input/day3/input.txt")?)?;
-        star!(day::part1(&input), 171183089);
-        star!(day::part2(&input), 63866497);
+        star!(3, day::part1(&input), 171183089, day::part2(&input), 63866497);
     }
 
     {
         use day4 as day;
         let input = day::parse(&read_file("input/day4/input.txt")?)?;
-        star!(day::part1(&input), 2358);
-        star!(day::part2(&input), 1737);
+        star!(4, day::part1(&input), 2358, day::part2(&input), 1737);
     }
 
     {
         use day5 as day;
         let input = day::parse(&read_file("input/day5/input.txt")?)?;
-        star!(day::part1(&input), 6051);
-        star!(day::part2(&input), 5093);
+        star!(5, day::part1(&input), 6051, day::part2(&input), 5093);
     }
 
     {
         use day6 as day;
         let input = day::parse(&read_file("input/day6/input.txt")?)?;
-        star!(day::part1(&input), 5199);
-        star!(day::part2(&input), 1915);
+        star!(6, day::part1(&input), 5199, day::part2(&input), 1915);
     }
 
     {
         use day7 as day;
         let input = day::parse(&read_file("input/day7/input.txt")?)?;
-        star!(day::part1(&input), 1153997401072);
-        star!(day::part2(&input), 97902809384118);
+        star!(7, day::part1(&input), 1153997401072, day::part2(&input), 97902809384118);
     }
 
     {
         use day8 as day;
         let input = day::parse(&read_file("input/day8/input.txt")?)?;
-        star!(day::part1(&input), 423);
-        star!(day::part2(&input), 1287);
+        star!(8, day::part1(&input), 423, day::part2(&input), 1287);
     }
 
     {
         use day9 as day;
         let input = day::parse(&read_file("input/day9/input.txt")?)?;
-        star!(day::part1(&input), 6225730762521);
-        star!(day::part2(&input), 6250605700557);
+        star!(9, day::part1(&input), 6225730762521, day::part2(&input), 6250605700557);
     }
 
     {
         use day10 as day;
         let input = day::parse(&read_file("input/day10/input.txt")?)?;
-        star!(day::part1(&input), 514);
-        star!(day::part2(&input), 1162);
+        star!(10, day::part1(&input), 514, day::part2(&input), 1162);
     }
 
-    println!();
-
-    // Print scale
-    for i in 1..=50 {
-        if i % 10 == 0 {
-            print!("^")
-        } else {
-            print!(" ")
-        }
+    {
+        use day11 as day;
+        let input = day::parse(&read_file("input/day11/input.txt")?)?;
+        star!(11, day::part1(&input), 199946, day::part2(&input), 237994815702032);
     }
-    println!();
 
     Ok(())
 }
