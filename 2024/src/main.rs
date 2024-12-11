@@ -5,6 +5,8 @@ use std::fs::File;
 use std::io::prelude::*;
 
 mod day1;
+mod day10;
+mod day11;
 mod day2;
 mod day3;
 mod day4;
@@ -13,8 +15,6 @@ mod day6;
 mod day7;
 mod day8;
 mod day9;
-mod day10;
-mod day11;
 
 pub fn read_file(path: &str) -> Result<String> {
     let mut file = File::open(path)?;
@@ -82,7 +82,6 @@ pub static DIR: [(i64, i64); 8] = [
 
 macro_rules! star {
     ($day:expr, $a:expr, $b:expr, $c:expr , $d:expr) => {
-
         let start = std::time::Instant::now();
         let part1_result = $a == $b;
         let part1_duration = start.elapsed();
@@ -99,7 +98,14 @@ macro_rules! star {
             }
         }
 
-        println!("{:>2} {:>12?} {} {:>12?} {}", $day, part1_duration, token(part1_result), part2_duration, token(part2_result));
+        println!(
+            "{:>2} {:>12?} {} {:>12?} {}",
+            $day,
+            part1_duration,
+            token(part1_result),
+            part2_duration,
+            token(part2_result)
+        );
     };
 }
 
@@ -119,7 +125,13 @@ fn main() -> Result<()> {
     {
         use day3 as day;
         let input = day::parse(&read_file("input/day3/input.txt")?)?;
-        star!(3, day::part1(&input), 171183089, day::part2(&input), 63866497);
+        star!(
+            3,
+            day::part1(&input),
+            171183089,
+            day::part2(&input),
+            63866497
+        );
     }
 
     {
@@ -143,7 +155,13 @@ fn main() -> Result<()> {
     {
         use day7 as day;
         let input = day::parse(&read_file("input/day7/input.txt")?)?;
-        star!(7, day::part1(&input), 1153997401072, day::part2(&input), 97902809384118);
+        star!(
+            7,
+            day::part1(&input),
+            1153997401072,
+            day::part2(&input),
+            97902809384118
+        );
     }
 
     {
@@ -155,7 +173,13 @@ fn main() -> Result<()> {
     {
         use day9 as day;
         let input = day::parse(&read_file("input/day9/input.txt")?)?;
-        star!(9, day::part1(&input), 6225730762521, day::part2(&input), 6250605700557);
+        star!(
+            9,
+            day::part1(&input),
+            6225730762521,
+            day::part2(&input),
+            6250605700557
+        );
     }
 
     {
@@ -167,7 +191,13 @@ fn main() -> Result<()> {
     {
         use day11 as day;
         let input = day::parse(&read_file("input/day11/input.txt")?)?;
-        star!(11, day::part1(&input), 199946, day::part2(&input), 237994815702032);
+        star!(
+            11,
+            day::part1(&input),
+            199946,
+            day::part2(&input),
+            237994815702032
+        );
     }
 
     Ok(())

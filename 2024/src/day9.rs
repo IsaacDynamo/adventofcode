@@ -1,15 +1,16 @@
-use std::collections::{BTreeMap, VecDeque};
 use eyre::{Report, Result};
 use itertools::Itertools;
+use std::collections::{BTreeMap, VecDeque};
 
 type Input = Vec<i64>;
 type Output = i64;
 
 pub fn parse(input: &str) -> Result<Input> {
-        input.chars()
-            .filter(|c| c.is_ascii_digit())
-            .map(|c| c.to_string().parse::<i64>().map_err(Report::from))
-            .collect()
+    input
+        .chars()
+        .filter(|c| c.is_ascii_digit())
+        .map(|c| c.to_string().parse::<i64>().map_err(Report::from))
+        .collect()
 }
 
 pub fn part1(input: &Input) -> Output {
@@ -69,13 +70,13 @@ pub fn part2(input: &Input) -> Output {
     let mut disk = BTreeMap::from_iter(blocks.iter().map(|(idx, id, n)| (*idx, (*id, *n))));
     for (idx, _, n) in blocks.iter().rev() {
         // Find gap
-        let gap_idx = disk.iter()
-            .tuple_windows::<(_, _)>()
-            .find_map(|((start_idx, (_, m)), (stop_idx, _))| {
+        let gap_idx = disk.iter().tuple_windows::<(_, _)>().find_map(
+            |((start_idx, (_, m)), (stop_idx, _))| {
                 let gap_idx = start_idx + m;
                 let gap = stop_idx - gap_idx;
                 (gap >= *n).then_some(gap_idx)
-            });
+            },
+        );
 
         if let Some(new_idx) = gap_idx {
             if new_idx < *idx {
@@ -86,11 +87,7 @@ pub fn part2(input: &Input) -> Output {
     }
 
     disk.iter()
-        .map(|(idx, (id, n))| {
-            (*idx..(*idx + *n))
-                .map(|i| i * id)
-                .sum::<i64>()
-        })
+        .map(|(idx, (id, n))| (*idx..(*idx + *n)).map(|i| i * id).sum::<i64>())
         .sum()
 }
 

@@ -1,4 +1,3 @@
-use std::collections::{BTreeMap, HashMap, VecDeque};
 use eyre::{Report, Result};
 use hashbag::HashBag;
 use num::{Integer, ToPrimitive};
@@ -7,9 +6,10 @@ type Input = Vec<i64>;
 type Output = i64;
 
 pub fn parse(input: &str) -> Result<Input> {
-        input.split_ascii_whitespace()
-            .map(|c| c.to_string().parse::<i64>().map_err(Report::from))
-            .collect()
+    input
+        .split_ascii_whitespace()
+        .map(|c| c.to_string().parse::<i64>().map_err(Report::from))
+        .collect()
 }
 
 fn digits(n: i64) -> usize {
@@ -24,11 +24,10 @@ fn split_digits(n: i64) -> (i64, i64) {
 }
 
 fn binks(input: &Input, blinks: usize) -> Output {
-    let mut stones = input.iter()
-        .fold(HashBag::new(), |mut acc, stone| {
-            acc.insert(*stone);
-            acc
-        });
+    let mut stones = input.iter().fold(HashBag::new(), |mut acc, stone| {
+        acc.insert(*stone);
+        acc
+    });
 
     for _ in 0..blinks {
         let mut next = HashBag::new();
@@ -46,9 +45,8 @@ fn binks(input: &Input, blinks: usize) -> Output {
         stones = next;
     }
 
-    dbg!(stones.set_len());
-
-    stones.set_iter()
+    stones
+        .set_iter()
         .map(|(_, n)| n)
         .sum::<usize>()
         .try_into()

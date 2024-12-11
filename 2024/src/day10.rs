@@ -1,6 +1,6 @@
-use std::collections::HashSet;
-use eyre::{Result, Report};
 use crate::Grid;
+use eyre::{Report, Result};
+use std::collections::HashSet;
 
 type Input = Grid<i64>;
 type Output = i64;
@@ -8,22 +8,20 @@ type Point = (i64, i64);
 
 pub fn parse(input: &str) -> Result<Input> {
     Ok(Grid::new(
-        input.lines()
+        input
+            .lines()
             .map(|x| {
                 x.chars()
-                    .map(|c| {
-                        c.to_string()
-                            .parse()
-                            .map_err(Report::from)
-                    })
+                    .map(|c| c.to_string().parse().map_err(Report::from))
                     .collect::<Result<_>>()
             })
-            .collect::<Result<_>>()?
+            .collect::<Result<_>>()?,
     ))
 }
 
 pub fn part1(input: &Input) -> Output {
-    input.iter()
+    input
+        .iter()
         .map(|(x, y, h)| {
             if h == 0 {
                 let mut heads = HashSet::new();
@@ -49,35 +47,38 @@ pub fn part1(input: &Input) -> Output {
             } else {
                 0
             }
-        }).sum()
+        })
+        .sum()
 }
 
 pub fn part2(input: &Input) -> Output {
-    input.iter()
-    .map(|(x, y, h)| {
-        if h == 0 {
-            fn step(input: &Input, pos: Point, height: i64) -> i64 {
-                if let Some(h) = input.get(pos.0, pos.1) {
-                    if h == height {
-                        if height == 9 {
-                            return 1;
-                        } else {
-                            return step(input, (pos.0 + 1, pos.1), height + 1)
-                                + step(input, (pos.0, pos.1 + 1), height + 1)
-                                + step(input, (pos.0 - 1, pos.1), height + 1)
-                                + step(input, (pos.0, pos.1 - 1), height + 1);
+    input
+        .iter()
+        .map(|(x, y, h)| {
+            if h == 0 {
+                fn step(input: &Input, pos: Point, height: i64) -> i64 {
+                    if let Some(h) = input.get(pos.0, pos.1) {
+                        if h == height {
+                            if height == 9 {
+                                return 1;
+                            } else {
+                                return step(input, (pos.0 + 1, pos.1), height + 1)
+                                    + step(input, (pos.0, pos.1 + 1), height + 1)
+                                    + step(input, (pos.0 - 1, pos.1), height + 1)
+                                    + step(input, (pos.0, pos.1 - 1), height + 1);
+                            }
                         }
                     }
+
+                    0
                 }
 
+                step(input, (x, y), 0)
+            } else {
                 0
             }
-
-            step(input, (x, y), 0)
-        } else {
-            0
-        }
-    }).sum()
+        })
+        .sum()
 }
 
 #[test]

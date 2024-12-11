@@ -5,20 +5,21 @@ type Input = Vec<(i64, Vec<i64>)>;
 type Output = i64;
 
 pub fn parse(input: &str) -> Result<Input> {
-    input.lines()
+    input
+        .lines()
         .map(|line| -> Result<_> {
             let mut parts = line.split_terminator(':');
-            let r = parts.next()
+            let r = parts
+                .next()
                 .ok_or_else(|| eyre::eyre!("bad format"))?
                 .parse::<i64>()
                 .map_err(eyre::Report::from)?;
 
-            let d = parts.next()
+            let d = parts
+                .next()
                 .ok_or_else(|| eyre::eyre!("bad format"))?
                 .split_ascii_whitespace()
-                .map(|n| {
-                    n.parse::<i64>().map_err(eyre::Report::from)
-                })
+                .map(|n| n.parse::<i64>().map_err(eyre::Report::from))
                 .collect::<Result<Vec<_>>>()?;
 
             Ok((r, d))
@@ -35,15 +36,16 @@ fn search1(acc: i64, digits: &[i64], result: i64) -> bool {
         return false;
     }
 
-    search1(acc + digits[0], &digits[1..], result)
-        || search1(acc * digits[0], &digits[1..], result)
+    search1(acc + digits[0], &digits[1..], result) || search1(acc * digits[0], &digits[1..], result)
 }
 
 pub fn part1(input: &Input) -> Output {
-    input.iter()
+    input
+        .iter()
         .filter_map(|(result, digits)| {
             (search1(digits[0], &digits[1..], *result)).then_some(result)
-        }).sum()
+        })
+        .sum()
 }
 
 fn search2(acc: i64, numbers: &[i64], result: i64) -> bool {
@@ -67,10 +69,12 @@ fn search2(acc: i64, numbers: &[i64], result: i64) -> bool {
 }
 
 pub fn part2(input: &Input) -> Output {
-    input.iter()
+    input
+        .iter()
         .filter_map(|(result, digits)| {
             (search2(digits[0], &digits[1..], *result)).then_some(result)
-        }).sum()
+        })
+        .sum()
 }
 
 #[test]

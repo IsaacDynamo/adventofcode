@@ -1,6 +1,6 @@
-use std::collections::HashSet;
-use eyre::Result;
 use crate::Grid;
+use eyre::Result;
+use std::collections::HashSet;
 
 type Input = Grid<char>;
 type Output = i64;
@@ -25,8 +25,8 @@ pub fn part1(input: &Input) -> Output {
                     }
                 }
 
-                insert(&mut nodes, size, (2*x1 - x2, 2*y1 - y2));
-                insert(&mut nodes, size, (2*x2 - x1, 2*y2 - y1));
+                insert(&mut nodes, size, (2 * x1 - x2, 2 * y1 - y2));
+                insert(&mut nodes, size, (2 * x2 - x1, 2 * y2 - y1));
             }
         }
     }
