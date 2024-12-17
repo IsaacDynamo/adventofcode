@@ -7,6 +7,9 @@ use std::io::prelude::*;
 mod day1;
 mod day10;
 mod day11;
+mod day12;
+mod day13;
+mod day14;
 mod day2;
 mod day3;
 mod day4;
@@ -47,6 +50,16 @@ impl<T: Copy> Grid<T> {
             let x: usize = x.try_into().unwrap();
             let y: usize = y.try_into().unwrap();
             self.data.get(y).and_then(|v: &Vec<T>| v.get(x)).copied()
+        }
+    }
+
+    pub fn get_ref(&self, x: i64, y: i64) -> Option<&T> {
+        if x < 0 || y < 0 {
+            None
+        } else {
+            let x: usize = x.try_into().unwrap();
+            let y: usize = y.try_into().unwrap();
+            self.data.get(y).and_then(|v: &Vec<T>| v.get(x))
         }
     }
 
@@ -197,6 +210,30 @@ fn main() -> Result<()> {
             199946,
             day::part2(&input),
             237994815702032
+        );
+    }
+
+    {
+        use day12 as day;
+        let input = day::parse(&read_file("input/day12/input.txt")?)?;
+        star!(
+            12,
+            day::part1(&input),
+            1483212,
+            day::part2(&input),
+            0
+        );
+    }
+
+    {
+        use day13 as day;
+        let input = day::parse(&read_file("input/day13/input.txt")?)?;
+        star!(
+            13,
+            day::part1(&input),
+            29436,
+            day::part2(&input),
+            103729094227877
         );
     }
 
