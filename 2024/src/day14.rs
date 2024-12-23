@@ -1,7 +1,10 @@
 use std::collections::HashSet;
 
 use eyre::{Report, Result};
-use num::{integer::{sqrt, Roots}, Integer};
+use num::{
+    integer::{sqrt, Roots},
+    Integer,
+};
 use regex::{Match, Regex};
 
 type Input = Vec<(Point, Point)>;
@@ -11,7 +14,8 @@ type Point = (i64, i64);
 pub fn parse(input: &str) -> Result<Input> {
     let re = Regex::new(r"p=(-?\d+),(-?\d+) v=(-?\d+),(-?\d+)")?;
 
-    input.lines()
+    input
+        .lines()
         .map(|line| {
             fn n(m: Option<Match>) -> Result<i64> {
                 m.ok_or(eyre::eyre!("Nope"))?
@@ -19,15 +23,15 @@ pub fn parse(input: &str) -> Result<Input> {
                     .parse::<i64>()
                     .map_err(Report::from)
             }
-            let m = re.captures(line)
-                .ok_or(eyre::eyre!("Nope"))?;
+            let m = re.captures(line).ok_or(eyre::eyre!("Nope"))?;
             Ok(((n(m.get(1))?, n(m.get(2))?), (n(m.get(3))?, n(m.get(4))?)))
         })
         .collect::<Result<_>>()
 }
 
 fn steps(input: &Input, size: Point, secs: i64) -> Output {
-    let bots = input.iter()
+    let bots = input
+        .iter()
         .map(|&(p, v)| {
             let x = (p.0 + v.0 * secs).mod_floor(&size.0);
             let y = (p.1 + v.1 * secs).mod_floor(&size.1);
@@ -42,27 +46,24 @@ fn steps(input: &Input, size: Point, secs: i64) -> Output {
     let xhalf = size.0 / 2;
     let yhalf = size.1 / 2;
 
-    let quads = bots.iter()
-        .fold([0,0,0,0], |mut acc, p| {
+    let quads = bots.iter().fold([0, 0, 0, 0], |mut acc, p| {
+        if p.0 < xhalf && p.1 < yhalf {
+            acc[0] += 1;
+        }
+        if p.0 < xhalf && p.1 > yhalf {
+            acc[1] += 1;
+        }
+        if p.0 > xhalf && p.1 < yhalf {
+            acc[2] += 1;
+        }
+        if p.0 > xhalf && p.1 > yhalf {
+            acc[3] += 1;
+        }
 
-            if p.0 < xhalf && p.1 < yhalf {
-                acc[0] += 1;
-            }
-            if p.0 < xhalf && p.1 > yhalf {
-                acc[1] += 1;
-            }
-            if p.0 > xhalf && p.1 < yhalf {
-                acc[2] += 1;
-            }
-            if p.0 > xhalf && p.1 > yhalf {
-                acc[3] += 1;
-            }
+        acc
+    });
 
-            acc
-        });
-
-    quads.iter()
-        .product()
+    quads.iter().product()
 }
 
 fn print(bots: &Vec<Point>, size: Point) {
@@ -87,7 +88,8 @@ pub fn part2(input: &Input) -> Output {
     let size = (101, 103);
 
     for secs in 0.. {
-        let bots = input.iter()
+        let bots = input
+            .iter()
             .map(|&(p, v)| {
                 let x = (p.0 + v.0 * secs).mod_floor(&size.0);
                 let y = (p.1 + v.1 * secs).mod_floor(&size.1);
@@ -99,7 +101,8 @@ pub fn part2(input: &Input) -> Output {
             })
             .collect::<Vec<Point>>();
 
-        let score = bots.iter()
+        let score = bots
+            .iter()
             .map(|p1| {
                 bots.iter()
                     .filter(|p2| p1.0 != p2.0 && p1.1 != p2.1)

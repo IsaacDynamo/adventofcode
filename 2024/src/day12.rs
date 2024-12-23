@@ -15,13 +15,13 @@ pub fn parse(input: &str) -> Result<Input> {
 #[derive(Debug, Clone, Copy)]
 enum Node {
     Link(Point),
-    Leaf(Leaf)
+    Leaf(Leaf),
 }
 
 #[derive(Debug, Clone, Copy)]
 struct Leaf {
     area: i64,
-    perimeter: i64
+    perimeter: i64,
 }
 
 fn get(nodes: &Grid<Node>, x: i64, y: i64) -> Option<&Leaf> {
@@ -85,60 +85,88 @@ fn unify(nodes: &mut Grid<Node>, a: Point, b: Point) {
             n.area += d.area;
             n.perimeter += d.perimeter;
             n.perimeter -= 2;
-        },
+        }
         (Some(c), Some(d)) if std::ptr::eq(c, d) => {
             let n = get_mut(nodes, a.0, a.1).unwrap();
             n.perimeter -= 2;
-        },
+        }
         _ => (),
     }
 }
 
 pub fn part1(input: &Input) -> Output {
-    let mut nodes = Grid::new(input.data.iter()
-        .map(|v| v.iter().map(|_| Node::Leaf(Leaf {area: 1, perimeter: 4})).collect())
-        .collect());
+    let mut nodes = Grid::new(
+        input
+            .data
+            .iter()
+            .map(|v| {
+                v.iter()
+                    .map(|_| {
+                        Node::Leaf(Leaf {
+                            area: 1,
+                            perimeter: 4,
+                        })
+                    })
+                    .collect()
+            })
+            .collect(),
+    );
 
     for (x, y, c) in input.iter() {
-        if input.get(x-1, y) == Some(c) {
-            unify(&mut nodes, (x-1, y), (x, y));
+        if input.get(x - 1, y) == Some(c) {
+            unify(&mut nodes, (x - 1, y), (x, y));
         }
 
-        if input.get(x, y-1) == Some(c) {
-            unify(&mut nodes, (x, y-1), (x, y));
+        if input.get(x, y - 1) == Some(c) {
+            unify(&mut nodes, (x, y - 1), (x, y));
         }
     }
 
-    nodes.iter().filter_map(|(_, _, n)| match n {
+    nodes
+        .iter()
+        .filter_map(|(_, _, n)| match n {
             Node::Link(_) => None,
             Node::Leaf(Leaf { area, perimeter }) => Some(area * perimeter),
         })
         .sum()
-
 }
 
 pub fn part2(input: &Input) -> Output {
-    let mut nodes = Grid::new(input.data.iter()
-        .map(|v| v.iter().map(|_| Node::Leaf(Leaf {area: 1, perimeter: 4})).collect())
-        .collect());
-
+    let mut nodes = Grid::new(
+        input
+            .data
+            .iter()
+            .map(|v| {
+                v.iter()
+                    .map(|_| {
+                        Node::Leaf(Leaf {
+                            area: 1,
+                            perimeter: 4,
+                        })
+                    })
+                    .collect()
+            })
+            .collect(),
+    );
 
     for (x, y, c) in input.iter() {
-        if input.get(x-1, y) == Some(c) {
-            unify(&mut nodes, (x-1, y), (x, y));
+        if input.get(x - 1, y) == Some(c) {
+            unify(&mut nodes, (x - 1, y), (x, y));
         }
 
-        if input.get(x, y-1) == Some(c) {
-            unify(&mut nodes, (x, y-1), (x, y));
+        if input.get(x, y - 1) == Some(c) {
+            unify(&mut nodes, (x, y - 1), (x, y));
         }
     }
 
-    nodes.iter().filter_map(|(x, y, n)| match n {
+    nodes
+        .iter()
+        .filter_map(|(x, y, n)| match n {
             Node::Link(_) => None,
             Node::Leaf(Leaf { area, perimeter }) => {
                 //println!("{} {} {:?} {} {}", x, y, input.get(x, y), area, perimeter);
                 Some(area * perimeter)
-            },
+            }
         })
         .sum()
 }

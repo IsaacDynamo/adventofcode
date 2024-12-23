@@ -11,16 +11,19 @@ pub fn parse(input: &str) -> Result<Input> {
     let b = Regex::new(r"Button B: X\+(\d+), Y\+(\d+)")?;
     let r = Regex::new(r"Prize: X=(\d+), Y=(\d+)")?;
 
-    input.split("\n\n")
+    input
+        .split("\n\n")
         .map(|block| {
             fn p(re: &Regex, block: &str) -> Result<Point> {
                 let m = re.captures(block).ok_or(eyre::eyre!("Nope"))?;
-                let x = m.get(1)
+                let x = m
+                    .get(1)
                     .ok_or(eyre::eyre!("Nope"))?
                     .as_str()
                     .parse::<i64>()
                     .map_err(Report::from)?;
-                let y = m.get(2)
+                let y = m
+                    .get(2)
                     .ok_or(eyre::eyre!("Nope"))?
                     .as_str()
                     .parse::<i64>()
@@ -48,21 +51,18 @@ fn solve(machine: (Point, Point, Point)) -> Option<i64> {
     // b = (PY * AX - PX * AY) / (BY * AX - BX * AY)
 
     let ((ax, ay), (bx, by), (px, py)) = machine;
-    let (b, br) = (py*ax - px*ay).div_rem(&(by*ax - bx*ay));
-    let (a, ar) = (px - bx*b).div_rem(&ax);
-    (ar == 0 && br == 0).then(|| a*3 + b)
+    let (b, br) = (py * ax - px * ay).div_rem(&(by * ax - bx * ay));
+    let (a, ar) = (px - bx * b).div_rem(&ax);
+    (ar == 0 && br == 0).then(|| a * 3 + b)
 }
 
 pub fn part1(input: &Input) -> Output {
-    input.iter()
-        .filter_map(|machine| {
-            solve(*machine)
-        })
-        .sum()
+    input.iter().filter_map(|machine| solve(*machine)).sum()
 }
 
 pub fn part2(input: &Input) -> Output {
-    input.iter()
+    input
+        .iter()
         .filter_map(|machine| {
             let (a, b, (px, py)) = *machine;
             let c = 10000000000000;

@@ -38,7 +38,12 @@ pub fn part1(input: &Input) -> Output {
     visited.len() as _
 }
 
-fn cycle(input: Grid<char>, mut loc: (i64, i64),  mut dir: (i64, i64), mut visited: HashMap<(i64, i64), u8> ) -> bool {
+fn cycle(
+    input: Grid<char>,
+    mut loc: (i64, i64),
+    mut dir: (i64, i64),
+    mut visited: HashMap<(i64, i64), u8>,
+) -> bool {
     while let Some(c) = input.get(loc.0 + dir.0, loc.1 + dir.1) {
         match c {
             '.' | '^' => {
@@ -71,7 +76,6 @@ pub fn part2(input: &Input) -> Output {
     let start = input.iter().find(|(_, _, c)| *c == '^').unwrap();
     let start = (start.0, start.1);
 
-
     let mut dir = (0, -1);
 
     let mut visited = HashMap::new();
@@ -86,7 +90,6 @@ pub fn part2(input: &Input) -> Output {
     while let Some(c) = input.get(next.0, next.1) {
         match c {
             '.' | '^' => {
-
                 if c == '.' && !visited.contains_key(&next) {
                     let mut n = input.clone();
                     if let Some(x) = n.get_mut(next.0, next.1) {
@@ -132,7 +135,7 @@ pub fn part2a(input: &Input) -> Output {
         for j in 0..n {
             if input.get(i, j) == Some('.') {
                 let mut n = input.clone();
-                let q = n.get_mut(i,j).unwrap();
+                let q = n.get_mut(i, j).unwrap();
                 *q = 'O';
                 if cycle(n, start, dir, HashMap::new()) {
                     obstruction.insert((i, j));
@@ -154,7 +157,7 @@ fn mask(dir: (i64, i64)) -> u8 {
         (1, 0) => 2,
         (0, -1) => 4,
         (-1, 0) => 8,
-        _ => unreachable!()
+        _ => unreachable!(),
     }
 }
 
@@ -163,12 +166,10 @@ fn part2_bad(input: &Input) -> Output {
     let start = (start.0, start.1);
     let start_dir = (0, -1);
 
-
     let mut visited = HashMap::new();
     visited.insert(start, HashMap::from_iter([(start_dir, 0)].into_iter()));
 
     //let mut obstruction = HashSet::new();
-
 
     let mut dir = start_dir;
     let mut loc = start;
@@ -186,7 +187,6 @@ fn part2_bad(input: &Input) -> Output {
                 let old = m.insert(dir, i);
                 assert!(old.is_none());
                 i += 1;
-
             }
             '#' | 'O' => {
                 dir = (-dir.1, dir.0);
@@ -194,7 +194,6 @@ fn part2_bad(input: &Input) -> Output {
             _ => unreachable!(),
         }
     }
-
 
     let mut cursors = VecDeque::new();
     let dir = start_dir;
@@ -205,11 +204,9 @@ fn part2_bad(input: &Input) -> Output {
     while let Some((loc, dir, i)) = cursors.pop_front() {
         match input.get(loc.0, loc.1) {
             Some('.') => {
-
                 let prev = (loc.0 - dir.0, loc.1 - dir.1);
 
-                cursors.push_back((prev, dir, i-1));
-
+                cursors.push_back((prev, dir, i - 1));
             }
             _ => (),
         }
@@ -237,7 +234,6 @@ fn part2_bad(input: &Input) -> Output {
     // }
 
     todo!()
-
 }
 
 #[test]
@@ -256,7 +252,7 @@ fn test() -> Result<()> {
 
     let p2 = part2(&input);
     println!("part2: {}", p2);
-    assert_eq!(p2 , 1915);
+    assert_eq!(p2, 1915);
 
     Ok(())
 }
