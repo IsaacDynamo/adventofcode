@@ -95,22 +95,12 @@ fn unify(nodes: &mut Grid<Node>, a: Point, b: Point) {
 }
 
 pub fn part1(input: &Input) -> Output {
-    let mut nodes = Grid::new(
-        input
-            .data
-            .iter()
-            .map(|v| {
-                v.iter()
-                    .map(|_| {
-                        Node::Leaf(Leaf {
-                            area: 1,
-                            perimeter: 4,
-                        })
-                    })
-                    .collect()
-            })
-            .collect(),
-    );
+    let mut nodes = input.map(|_, _, _| {
+        Node::Leaf(Leaf {
+            area: 1,
+            perimeter: 4,
+        })
+    });
 
     for (x, y, c) in input.iter() {
         if input.get(x - 1, y) == Some(c) {
@@ -132,22 +122,12 @@ pub fn part1(input: &Input) -> Output {
 }
 
 pub fn part2(input: &Input) -> Output {
-    let mut nodes = Grid::new(
-        input
-            .data
-            .iter()
-            .map(|v| {
-                v.iter()
-                    .map(|_| {
-                        Node::Leaf(Leaf {
-                            area: 1,
-                            perimeter: 4,
-                        })
-                    })
-                    .collect()
-            })
-            .collect(),
-    );
+    let mut nodes = input.map(|_, _, _| {
+        Node::Leaf(Leaf {
+            area: 1,
+            perimeter: 4,
+        })
+    });
 
     for (x, y, c) in input.iter() {
         if input.get(x - 1, y) == Some(c) {

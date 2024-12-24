@@ -112,7 +112,9 @@ pub fn part2(input: &Input) -> Output {
             .sum::<i64>();
 
         if score > 500 {
-            print(&bots, size);
+            if cfg!(test) {
+                print(&bots, size);
+            }
             return secs;
         }
     }

@@ -28,57 +28,57 @@ pub fn read_file(path: &str) -> Result<String> {
 
 #[derive(Debug, Clone)]
 pub struct Grid<T> {
-    data: Vec<Vec<T>>,
+    size: (i64, i64),
+    data: Vec<T>,
 }
 
 impl<T: Copy> Grid<T> {
     pub fn new(data: Vec<Vec<T>>) -> Self {
-        Grid { data }
+        let size = (data[0].len() as i64, data.len() as i64);
+        let data: Vec<T> = data.iter().flat_map(|line| line.iter().copied()).collect();
+        assert_eq!(data.len() as i64, size.0 * size.1);
+        Grid { size, data }
     }
 
     pub fn size(&self) -> (i64, i64) {
-        (
-            self.data[0].len().try_into().unwrap(),
-            self.data.len().try_into().unwrap(),
-        )
+        self.size
     }
 
     pub fn get(&self, x: i64, y: i64) -> Option<T> {
-        if x < 0 || y < 0 {
-            None
+        if 0 <= x && x < self.size.0 && 0 <= y && y < self.size.1 {
+            Some(self.data[(self.size.0 * y + x) as usize])
         } else {
-            let x: usize = x.try_into().unwrap();
-            let y: usize = y.try_into().unwrap();
-            self.data.get(y).and_then(|v: &Vec<T>| v.get(x)).copied()
+            None
         }
     }
 
     pub fn get_ref(&self, x: i64, y: i64) -> Option<&T> {
-        if x < 0 || y < 0 {
-            None
+        if 0 <= x && x < self.size.0 && 0 <= y && y < self.size.1 {
+            Some(&self.data[(self.size.0 * y + x) as usize])
         } else {
-            let x: usize = x.try_into().unwrap();
-            let y: usize = y.try_into().unwrap();
-            self.data.get(y).and_then(|v: &Vec<T>| v.get(x))
+            None
         }
     }
 
     pub fn get_mut(&mut self, x: i64, y: i64) -> Option<&mut T> {
-        if x < 0 || y < 0 {
-            None
+        if 0 <= x && x < self.size.0 && 0 <= y && y < self.size.1 {
+            Some(&mut self.data[(self.size.0 * y + x) as usize])
         } else {
-            let x: usize = x.try_into().unwrap();
-            let y: usize = y.try_into().unwrap();
-            self.data.get_mut(y).and_then(|v: &mut Vec<T>| v.get_mut(x))
+            None
         }
     }
 
     pub fn iter(&self) -> impl Iterator<Item = (i64, i64, T)> + '_ {
-        self.data.iter().enumerate().flat_map(|(y, line)| {
-            line.iter()
-                .enumerate()
-                .map(move |(x, c)| (x as i64, y as i64, *c))
-        })
+        (0..self.size.1)
+            .flat_map(move |y| (0..self.size.0).map(move |x| (x, y, self.get(x, y).unwrap())))
+    }
+
+    pub fn map<U>(&self, func: impl Fn(i64, i64, T) -> U) -> Grid<U> {
+        let data = self.iter().map(|(x, y, v)| func(x, y, v)).collect();
+        Grid {
+            size: self.size,
+            data,
+        }
     }
 }
 
@@ -107,7 +107,7 @@ macro_rules! star {
             if result {
                 "*".bright_yellow()
             } else {
-                "_".into()
+                "-".into()
             }
         }
 
@@ -229,6 +229,12 @@ fn main() -> Result<()> {
             day::part2(&input),
             103729094227877
         );
+    }
+
+    {
+        use day14 as day;
+        let input = day::parse(&read_file("input/day14/input.txt")?)?;
+        star!(14, day::part1(&input), 220971520, day::part2(&input), 6355);
     }
 
     Ok(())

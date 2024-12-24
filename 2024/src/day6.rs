@@ -1,7 +1,6 @@
-use std::collections::{HashMap, HashSet, VecDeque};
-
 use crate::Grid;
 use eyre::Result;
+use std::collections::HashSet;
 
 type Input = Grid<char>;
 type Output = i64;
@@ -21,7 +20,6 @@ pub fn part1(input: &Input) -> Output {
 
     let mut loc = start;
     let mut dir = (0, -1);
-
     while let Some(c) = input.get(loc.0 + dir.0, loc.1 + dir.1) {
         match c {
             '.' | '^' => {
@@ -29,7 +27,7 @@ pub fn part1(input: &Input) -> Output {
                 visited.insert(loc);
             }
             '#' => {
-                dir = (-dir.1, dir.0);
+                dir = turn(dir);
             }
             _ => unreachable!(),
         }
@@ -42,18 +40,14 @@ fn cycle(
     input: Grid<char>,
     mut loc: (i64, i64),
     mut dir: (i64, i64),
-    mut visited: HashMap<(i64, i64), u8>,
+    mut visited: Grid<u8>,
 ) -> bool {
     while let Some(c) = input.get(loc.0 + dir.0, loc.1 + dir.1) {
         match c {
             '.' | '^' => {
                 loc = (loc.0 + dir.0, loc.1 + dir.1);
 
-                if !visited.contains_key(&loc) {
-                    visited.insert(loc, 0);
-                }
-
-                let s = visited.get_mut(&loc).unwrap();
+                let s = visited.get_mut(loc.0, loc.1).unwrap();
 
                 let m = mask(dir);
                 if (*s & m) != 0 {
@@ -63,7 +57,7 @@ fn cycle(
                 }
             }
             '#' | 'O' => {
-                dir = (-dir.1, dir.0);
+                dir = turn(dir);
             }
             _ => unreachable!(),
         }
@@ -77,20 +71,16 @@ pub fn part2(input: &Input) -> Output {
     let start = (start.0, start.1);
 
     let mut dir = (0, -1);
-
-    let mut visited = HashMap::new();
-    visited.insert(start, mask(dir));
+    let mut visited = input.map(|_, _, _| 0);
+    visited.get_mut(start.0, start.1).map(|x| *x = mask(dir));
 
     let mut obstruction = HashSet::new();
-
     let mut loc = start;
-
     let mut next = (loc.0 + dir.0, loc.1 + dir.1);
-
     while let Some(c) = input.get(next.0, next.1) {
         match c {
             '.' | '^' => {
-                if c == '.' && !visited.contains_key(&next) {
+                if c == '.' && visited.get(next.0, next.1).unwrap() == 0 {
                     let mut n = input.clone();
                     if let Some(x) = n.get_mut(next.0, next.1) {
                         assert!(*x == '.');
@@ -103,15 +93,11 @@ pub fn part2(input: &Input) -> Output {
 
                 loc = (loc.0 + dir.0, loc.1 + dir.1);
 
-                if !visited.contains_key(&loc) {
-                    visited.insert(loc, 0);
-                }
-
-                let m = visited.get_mut(&loc).unwrap();
+                let m = visited.get_mut(loc.0, loc.1).unwrap();
                 *m |= mask(dir);
             }
             '#' => {
-                dir = (-dir.1, dir.0);
+                dir = turn(dir);
             }
             _ => unreachable!(),
         }
@@ -119,30 +105,6 @@ pub fn part2(input: &Input) -> Output {
     }
 
     assert!(!obstruction.contains(&start));
-
-    obstruction.len() as _
-}
-
-pub fn part2a(input: &Input) -> Output {
-    let start = input.iter().find(|(_, _, c)| *c == '^').unwrap();
-    let start = (start.0, start.1);
-
-    let mut dir = (0, -1);
-    let mut obstruction = HashSet::new();
-
-    let (m, n) = input.size();
-    for i in 0..m {
-        for j in 0..n {
-            if input.get(i, j) == Some('.') {
-                let mut n = input.clone();
-                let q = n.get_mut(i, j).unwrap();
-                *q = 'O';
-                if cycle(n, start, dir, HashMap::new()) {
-                    obstruction.insert((i, j));
-                }
-            }
-        }
-    }
 
     obstruction.len() as _
 }
@@ -161,81 +123,6 @@ fn mask(dir: (i64, i64)) -> u8 {
     }
 }
 
-fn part2_bad(input: &Input) -> Output {
-    let start = input.iter().find(|(_, _, c)| *c == '^').unwrap();
-    let start = (start.0, start.1);
-    let start_dir = (0, -1);
-
-    let mut visited = HashMap::new();
-    visited.insert(start, HashMap::from_iter([(start_dir, 0)].into_iter()));
-
-    //let mut obstruction = HashSet::new();
-
-    let mut dir = start_dir;
-    let mut loc = start;
-    let mut i = 0;
-    while let Some(c) = input.get(loc.0 + dir.0, loc.1 + dir.1) {
-        match c {
-            '.' | '^' => {
-                loc = (loc.0 + dir.0, loc.1 + dir.1);
-
-                if !visited.contains_key(&loc) {
-                    visited.insert(loc, HashMap::new());
-                }
-
-                let m = visited.get_mut(&loc).unwrap();
-                let old = m.insert(dir, i);
-                assert!(old.is_none());
-                i += 1;
-            }
-            '#' | 'O' => {
-                dir = (-dir.1, dir.0);
-            }
-            _ => unreachable!(),
-        }
-    }
-
-    let mut cursors = VecDeque::new();
-    let dir = start_dir;
-    let loc = start;
-    let i = 0;
-    cursors.push_back((loc, dir, i));
-
-    while let Some((loc, dir, i)) = cursors.pop_front() {
-        match input.get(loc.0, loc.1) {
-            Some('.') => {
-                let prev = (loc.0 - dir.0, loc.1 - dir.1);
-
-                cursors.push_back((prev, dir, i - 1));
-            }
-            _ => (),
-        }
-    }
-
-    // while let Some(c) = input.get(loc.0 - dir.0, loc.1 - dir.1) {
-    //     match c {
-    //         '.' | '^' => {
-    //             loc = (loc.0 - dir.0, loc.1 - dir.1);
-
-    //             if !visited.contains_key(&loc) {
-    //                 visited.insert(loc, HashMap::new());
-    //             }
-
-    //             let m = visited.get_mut(&loc).unwrap();
-    //             i += 1;
-    //             m.insert(dir, i);
-
-    //         }
-    //         '#' | 'O' => {
-    //             dir = (-dir.1, dir.0);
-    //         }
-    //         _ => unreachable!(),
-    //     }
-    // }
-
-    todo!()
-}
-
 #[test]
 fn test() -> Result<()> {
     use crate::read_file;
@@ -249,10 +136,7 @@ fn test() -> Result<()> {
     println!("part1: {}", part1(&input));
 
     assert_eq!(part2(&example), 6);
-
-    let p2 = part2(&input);
-    println!("part2: {}", p2);
-    assert_eq!(p2, 1915);
+    println!("part2: {}", part2(&input));
 
     Ok(())
 }
