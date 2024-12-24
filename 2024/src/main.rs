@@ -12,6 +12,7 @@ mod day13;
 mod day14;
 mod day2;
 mod day23;
+mod day24;
 mod day3;
 mod day4;
 mod day5;
@@ -247,6 +248,18 @@ fn main() -> Result<()> {
             1215,
             day::part2(&input),
             *"bm,by,dv,ep,ia,ja,jb,ks,lv,ol,oy,uz,yt"
+        );
+    }
+
+    {
+        use day24 as day;
+        let input = day::parse(&read_file("input/day24/input.txt")?)?;
+        star!(
+            24,
+            day::part1(&input),
+            58639252480880,
+            day::part2(&input),
+            *"todo"
         );
     }
 
