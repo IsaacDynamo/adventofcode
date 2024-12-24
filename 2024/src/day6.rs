@@ -72,7 +72,8 @@ pub fn part2(input: &Input) -> Output {
 
     let mut dir = (0, -1);
     let mut visited = input.map(|_, _, _| 0);
-    visited.get_mut(start.0, start.1).map(|x| *x = mask(dir));
+    let s = visited.get_mut(start.0, start.1).unwrap();
+    *s = mask(dir);
 
     let mut obstruction = HashSet::new();
     let mut loc = start;

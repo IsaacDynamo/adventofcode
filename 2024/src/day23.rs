@@ -60,11 +60,11 @@ fn grow(
         // Base case
         if set.len() > best.len() {
             // Better
-            *best = set.clone();
+            best.clone_from(set);
         }
     } else {
         // Try skip
-        grow(g, &set, &neighbors[1..], best);
+        grow(g, set, &neighbors[1..], best);
 
         // Try add
         let n = neighbors[0];
@@ -102,12 +102,10 @@ pub fn part2(input: &Input) -> String {
 
     cluster.sort();
 
-    let password = cluster
+    cluster
         .into_iter()
         .reduce(|a, b| format!("{},{}", a, b))
-        .unwrap();
-
-    password
+        .unwrap()
 }
 
 #[test]

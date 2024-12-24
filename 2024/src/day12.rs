@@ -1,6 +1,5 @@
 use crate::Grid;
 use eyre::Result;
-use std::collections::HashSet;
 
 type Input = Grid<char>;
 type Output = i64;
@@ -38,7 +37,7 @@ fn get(nodes: &Grid<Node>, x: i64, y: i64) -> Option<&Leaf> {
     }
 }
 
-fn get_mut<'a>(nodes: &'a mut Grid<Node>, x: i64, y: i64) -> Option<&'a mut Leaf> {
+fn get_mut(nodes: &mut Grid<Node>, x: i64, y: i64) -> Option<&mut Leaf> {
     if let Some(Node::Link((x, y))) = nodes.get(x, y) {
         get_mut(nodes, x, y)
     } else {
@@ -50,7 +49,7 @@ fn get_mut<'a>(nodes: &'a mut Grid<Node>, x: i64, y: i64) -> Option<&'a mut Leaf
     }
 }
 
-fn get_mut_node<'a>(nodes: &'a mut Grid<Node>, x: i64, y: i64) -> Option<&'a mut Node> {
+fn get_mut_node(nodes: &mut Grid<Node>, x: i64, y: i64) -> Option<&mut Node> {
     if let Some(Node::Link((x, y))) = nodes.get(x, y) {
         get_mut_node(nodes, x, y)
     } else {
@@ -141,12 +140,9 @@ pub fn part2(input: &Input) -> Output {
 
     nodes
         .iter()
-        .filter_map(|(x, y, n)| match n {
+        .filter_map(|(_, _, n)| match n {
             Node::Link(_) => None,
-            Node::Leaf(Leaf { area, perimeter }) => {
-                //println!("{} {} {:?} {} {}", x, y, input.get(x, y), area, perimeter);
-                Some(area * perimeter)
-            }
+            Node::Leaf(Leaf { area, perimeter }) => Some(area * perimeter),
         })
         .sum()
 }

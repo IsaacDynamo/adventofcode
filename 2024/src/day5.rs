@@ -8,8 +8,9 @@ type Output = i64;
 pub fn parse(input: &str) -> Result<Input> {
     let mut lines = input.lines();
     let mut pairs = Vec::new();
-    while let Some(line) = lines.next() {
-        if line == "" {
+
+    for line in lines.by_ref() {
+        if line.is_empty() {
             break;
         }
 
@@ -22,7 +23,7 @@ pub fn parse(input: &str) -> Result<Input> {
     }
 
     let mut lists = Vec::new();
-    while let Some(line) = lines.next() {
+    for line in lines {
         let list = line
             .split(',')
             .map(|n| n.parse::<i64>().map_err(Report::from))
@@ -39,7 +40,7 @@ fn make_constraints(input: &Input) -> Constraints {
     let mut constraints: Constraints = HashMap::new();
 
     for (a, b) in input.0.iter() {
-        if let Some(s) = constraints.get_mut(&b) {
+        if let Some(s) = constraints.get_mut(b) {
             s.insert(*a);
         } else {
             constraints.insert(*b, HashSet::from_iter([*a].into_iter()));
@@ -55,7 +56,7 @@ fn is_ordered(list: &[i64], constraints: &Constraints) -> bool {
             if acc.contains(x) {
                 None
             } else {
-                if let Some(c) = constraints.get(&x) {
+                if let Some(c) = constraints.get(x) {
                     acc.extend(c.iter());
                 }
                 Some(acc)

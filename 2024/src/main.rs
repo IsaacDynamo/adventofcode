@@ -246,7 +246,7 @@ fn main() -> Result<()> {
             day::part1(&input),
             1215,
             day::part2(&input),
-            "bm,by,dv,ep,ia,ja,jb,ks,lv,ol,oy,uz,yt".to_string()
+            *"bm,by,dv,ep,ia,ja,jb,ks,lv,ol,oy,uz,yt"
         );
     }
 

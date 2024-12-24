@@ -1,10 +1,7 @@
 use std::collections::HashSet;
 
 use eyre::{Report, Result};
-use num::{
-    integer::{sqrt, Roots},
-    Integer,
-};
+use num::Integer;
 use regex::{Match, Regex};
 
 type Input = Vec<(Point, Point)>;
@@ -66,7 +63,7 @@ fn steps(input: &Input, size: Point, secs: i64) -> Output {
     quads.iter().product()
 }
 
-fn print(bots: &Vec<Point>, size: Point) {
+fn print(bots: &[Point], size: Point) {
     let set = HashSet::<Point>::from_iter(bots.iter().copied());
     for y in 0..size.1 {
         for x in 0..size.0 {
@@ -76,12 +73,12 @@ fn print(bots: &Vec<Point>, size: Point) {
                 print!(" ");
             }
         }
-        println!("")
+        println!()
     }
 }
 
 pub fn part1(input: &Input) -> Output {
-    steps(&input, (101, 103), 100)
+    steps(input, (101, 103), 100)
 }
 
 pub fn part2(input: &Input) -> Output {
