@@ -11,6 +11,7 @@ mod day12;
 mod day13;
 mod day14;
 mod day2;
+mod day23;
 mod day3;
 mod day4;
 mod day5;
@@ -97,11 +98,11 @@ macro_rules! star {
     ($day:expr, $a:expr, $b:expr, $c:expr , $d:expr) => {
         let start = std::time::Instant::now();
         let part1_result = $a == $b;
-        let part1_duration = start.elapsed();
+        let part1_duration = start.elapsed().as_micros();
 
         let start = std::time::Instant::now();
         let part2_result = $c == $d;
-        let part2_duration = start.elapsed();
+        let part2_duration = start.elapsed().as_micros();
 
         fn token(result: bool) -> ColoredString {
             if result {
@@ -112,7 +113,7 @@ macro_rules! star {
         }
 
         println!(
-            "{:>2} {:>12?} {} {:>12?} {}",
+            "{:>2} {:>12}µs {} {:>12}µs {}",
             $day,
             part1_duration,
             token(part1_result),
@@ -235,6 +236,18 @@ fn main() -> Result<()> {
         use day14 as day;
         let input = day::parse(&read_file("input/day14/input.txt")?)?;
         star!(14, day::part1(&input), 220971520, day::part2(&input), 6355);
+    }
+
+    {
+        use day23 as day;
+        let input = day::parse(&read_file("input/day23/input.txt")?)?;
+        star!(
+            23,
+            day::part1(&input),
+            1215,
+            day::part2(&input),
+            "bm,by,dv,ep,ia,ja,jb,ks,lv,ol,oy,uz,yt".to_string()
+        );
     }
 
     Ok(())
