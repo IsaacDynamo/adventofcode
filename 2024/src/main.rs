@@ -13,6 +13,7 @@ mod day14;
 mod day2;
 mod day23;
 mod day24;
+mod day25;
 mod day3;
 mod day4;
 mod day5;
@@ -261,6 +262,12 @@ fn main() -> Result<()> {
             day::part2(&input),
             *"todo"
         );
+    }
+
+    {
+        use day25 as day;
+        let input = day::parse(&read_file("input/day25/input.txt")?)?;
+        star!(25, day::part1(&input), 2900, day::part2(&input), -1);
     }
 
     Ok(())
