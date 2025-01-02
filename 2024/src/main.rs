@@ -10,7 +10,12 @@ mod day11;
 mod day12;
 mod day13;
 mod day14;
+mod day16;
+mod day17;
+mod day18;
+mod day19;
 mod day2;
+mod day20;
 mod day23;
 mod day24;
 mod day25;
@@ -85,6 +90,12 @@ impl<T: Copy> Grid<T> {
     }
 }
 
+impl Grid<char> {
+    pub fn from_str(input: &str) -> Self {
+        Grid::new(input.lines().map(|x| x.chars().collect()).collect())
+    }
+}
+
 pub static DIR: [(i64, i64); 8] = [
     (1, 0),
     (1, 1),
@@ -108,9 +119,9 @@ macro_rules! star {
 
         fn token(result: bool) -> ColoredString {
             if result {
-                "*".bright_yellow()
+                "(*)".bright_yellow()
             } else {
-                "-".into()
+                " . ".into()
             }
         }
 
@@ -238,6 +249,52 @@ fn main() -> Result<()> {
         use day14 as day;
         let input = day::parse(&read_file("input/day14/input.txt")?)?;
         star!(14, day::part1(&input), 220971520, day::part2(&input), 6355);
+    }
+
+    {
+        star!(15, 0, -1, 0, -1);
+    }
+
+    {
+        use day16 as day;
+        let input = day::parse(&read_file("input/day16/input.txt")?)?;
+        star!(16, day::part1(&input), 75416, day::part2(&input), 476);
+    }
+
+    {
+        use day17 as day;
+        let input = day::parse(&read_file("input/day17/input.txt")?)?;
+        star!(17, day::part1(&input), "3,1,4,3,1,7,1,6,3", 0, -1);
+    }
+
+    {
+        use day18 as day;
+        let input = day::parse(&read_file("input/day18/input.txt")?)?;
+        star!(18, day::part1(&input), 320, day::part2(&input), "34,40");
+    }
+
+    {
+        use day19 as day;
+        let input = day::parse(&read_file("input/day19/input.txt")?)?;
+        star!(
+            19,
+            day::part1(&input),
+            263,
+            day::part2(&input),
+            723524534506343
+        );
+    }
+
+    {
+        use day20 as day;
+        let input = day::parse(&read_file("input/day20/input.txt")?)?;
+        star!(20, day::part1(&input), 1381, day::part2(&input), 982124);
+    }
+    {
+        star!(21, 0, -1, 0, -1);
+    }
+    {
+        star!(22, 0, -1, 0, -1);
     }
 
     {
