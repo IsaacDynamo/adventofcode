@@ -16,6 +16,8 @@ mod day18;
 mod day19;
 mod day2;
 mod day20;
+mod day21;
+mod day22;
 mod day23;
 mod day24;
 mod day25;
@@ -290,11 +292,29 @@ fn main() -> Result<()> {
         let input = day::parse(&read_file("input/day20/input.txt")?)?;
         star!(20, day::part1(&input), 1381, day::part2(&input), 982124);
     }
+
     {
-        star!(21, 0, -1, 0, -1);
+        use day21 as day;
+        let input = day::parse(&read_file("input/day21/input.txt")?)?;
+        star!(
+            21,
+            day::part1(&input),
+            184180,
+            day::part2(&input),
+            231309103124520
+        );
     }
+
     {
-        star!(22, 0, -1, 0, -1);
+        use day22 as day;
+        let input = day::parse(&read_file("input/day22/input.txt")?)?;
+        star!(
+            22,
+            day::part1(&input),
+            19847565303,
+            day::part2(&input),
+            2250
+        );
     }
 
     {
