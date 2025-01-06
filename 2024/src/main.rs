@@ -10,6 +10,7 @@ mod day11;
 mod day12;
 mod day13;
 mod day14;
+mod day15;
 mod day16;
 mod day17;
 mod day18;
@@ -254,7 +255,9 @@ fn main() -> Result<()> {
     }
 
     {
-        star!(15, 0, -1, 0, -1);
+        use day15 as day;
+        let input = day::parse(&read_file("input/day15/input.txt")?)?;
+        star!(15, day::part1(&input), 1438161, day::part2(&input), -1);
     }
 
     {
