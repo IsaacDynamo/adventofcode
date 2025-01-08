@@ -257,7 +257,7 @@ fn main() -> Result<()> {
     {
         use day15 as day;
         let input = day::parse(&read_file("input/day15/input.txt")?)?;
-        star!(15, day::part1(&input), 1438161, day::part2(&input), -1);
+        star!(15, day::part1(&input), 1438161, day::part2(&input), 1437981);
     }
 
     {
