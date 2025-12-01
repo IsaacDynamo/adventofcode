@@ -269,7 +269,7 @@ fn main() -> Result<()> {
     {
         use day17 as day;
         let input = day::parse(&read_file("input/day17/input.txt")?)?;
-        star!(17, day::part1(&input), "3,1,4,3,1,7,1,6,3", 0, -1);
+        star!(17, day::part1(&input), "3,1,4,3,1,7,1,6,3", day::part2(&input), 37221270076916);
     }
 
     {

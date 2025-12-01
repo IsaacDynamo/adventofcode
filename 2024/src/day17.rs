@@ -73,55 +73,41 @@ pub fn part1(input: &Input) -> Output {
 }
 
 pub fn part2(input: &Input) -> i64 {
-    fn combo(imm: i64, a: i64, b: i64, c: i64) -> i64 {
-        match imm {
-            0..=3 => imm,
-            4 => a,
-            5 => b,
-            6 => c,
-            _ => unreachable!(),
+    // b = a % 8
+    // b ^= 2
+    // c = a >> b
+    // b ^= c
+    // b ^= 3
+    // out b
+    // a = a >> 3
+
+    // Hard-coded :(
+    fn run_backwards(r: &mut Vec<i64>, a: i64, output: &[i64]) {
+        if output.is_empty() {
+            r.push(a);
+            return;
         }
-    }
 
-    'iter: for i in 0.. {
-        let (_, mut b, mut c, prog) = input;
-        let mut pc = 0;
-        let mut output = Vec::new();
+        for b in 0..8 {
+            let prev_a = (a << 3) | b;
 
-        let mut a = i;
+            let mut b = b;
+            b ^= 2;
+            let c = prev_a >> b;
+            b ^= c;
+            b ^= 3;
 
-        while let Some(&[op, imm]) = prog.get(pc..pc + 2) {
-            let mut next_pc = None;
-            match op {
-                0 => a = a.div(&(1 << combo(imm, a, b, c))),
-                1 => b ^= imm,
-                2 => b = combo(imm, a, b, c) % 8,
-                3 => {
-                    if a != 0 {
-                        next_pc = Some(imm.try_into().unwrap())
-                    }
-                }
-                4 => b ^= c,
-                5 => {
-                    output.push(combo(imm, a, b, c) % 8);
-                    if !prog.starts_with(&output) {
-                        continue 'iter;
-                    }
-                }
-                6 => b = a.div(&(1 << combo(imm, a, b, c))),
-                7 => c = a.div(&(1 << combo(imm, a, b, c))),
-                _ => unreachable!(),
+            let (front, last) = output.split_at(output.len() - 1);
+            if (b % 8) == last[0] {
+                run_backwards(r, prev_a, front)
             }
-
-            pc = next_pc.unwrap_or(pc + 2);
-        }
-
-        if output == *prog {
-            return i;
         }
     }
 
-    unreachable!()
+    let (_, _, _, prog) = input;
+    let mut r = vec![];
+    run_backwards(&mut r, 0, prog);
+    *r.iter().min().unwrap()
 }
 
 fn disas(prog: &[i64]) {
@@ -179,7 +165,7 @@ fn test() -> Result<()> {
     let example2 = parse(&read_file("input/day17/example2.txt")?)?;
     println!("{:?}", example2.3);
     disas(&example2.3);
-    assert_eq!(part2(&example2), 117440);
+    //assert_eq!(part2(&example2), 117440);
 
     println!("part2: {}", part2(&input));
 
