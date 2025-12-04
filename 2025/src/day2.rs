@@ -1,5 +1,5 @@
 use eyre::Result;
-use num::{integer::div_rem, Integer};
+use std::collections::HashSet;
 
 type Input = Vec<(i64, i64)>;
 type Output = i64;
@@ -16,52 +16,100 @@ pub fn parse(input: &str) -> Result<Input> {
         .collect())
 }
 
-pub fn part1(input: &Input) -> Output {
-    input
-        .iter()
-        .flat_map(|range| {
-            (range.0..=range.1).filter_map(|n| {
-                let digits = n.ilog10() + 1;
-                if digits.is_odd() {
-                    return None;
-                }
-                let q = 10i64.pow(digits / 2);
-                let a = n / q;
-                let b = n % q;
-                (a == b).then_some(n)
-            })
-        })
-        .sum()
+fn digits(n: i64) -> i64 {
+    (n.ilog10() + 1) as i64
 }
 
-/// Instead of scaning throught the ranges, which is relativly slow (88ms), it is also possible to generate invalid IDs and see if they are still within the range.
-/// This needs some dedup because 2x '111' is equal to 3x '11', but input only has 11 invalid IDs so overhead should be minimal.
+fn pow10(n: i64) -> i64 {
+    10i64.pow(n as u32)
+}
+
+struct Range {
+    start: i64,
+    stop: i64,
+}
+
+impl Range {
+    fn new(start: i64, stop: i64) -> Self {
+        Self { start, stop }
+    }
+}
+
+impl Iterator for Range {
+    type Item = (i64, i64);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.start > self.stop {
+            None
+        } else {
+            let len = digits(self.start);
+            let x = pow10(len);
+            let a = self.start;
+            let b = self.stop.min(x - 1);
+
+            self.start = x;
+
+            Some((a, b))
+        }
+    }
+}
+
+fn normalize(input: &Input) -> impl Iterator<Item = (i64, i64)> {
+    input.iter().flat_map(|(a, b)| Range::new(*a, *b))
+}
+
+fn chunks(digits: i64) -> impl Iterator<Item = (i64, i64)> {
+    (2..=digits).filter_map(move |n| {
+        let size = digits / n;
+        (n * size == digits).then_some((n, size))
+    })
+}
+
+pub fn part1(input: &Input) -> Output {
+    let mut invalid = HashSet::new();
+
+    normalize(input).for_each(|(a, b)| {
+        let d = digits(a);
+        let size = d / 2;
+
+        if 2 * size == d {
+            let q = pow10(size);
+            let qqq = q + 1;
+            let a_head = a / q;
+            let b_head = b / q;
+
+            (a_head..=b_head).for_each(|p| {
+                let id = p * qqq;
+                if a <= id && id <= b {
+                    invalid.insert(id);
+                }
+            });
+        }
+    });
+
+    invalid.iter().sum()
+}
+
 pub fn part2(input: &Input) -> Output {
-    input
-        .iter()
-        .flat_map(|range| {
-            (range.0..=range.1).filter_map(|n| {
-                let digits = n.ilog10() + 1;
-                (2..=digits)
-                    .filter_map(|chunks| {
-                        let size = digits / chunks;
-                        (chunks * size == digits).then_some((chunks, size))
-                    })
-                    .any(|(chunks, size)| {
-                        let radix = 10i64.pow(size);
-                        let pattern = n % radix;
-                        (0..chunks)
-                            .scan(n, |s, _| {
-                                let (ss, x) = div_rem(*s, radix);
-                                *s = ss;
-                                Some(x)
-                            })
-                            .all(|x| x == pattern)
-                    })
-                    .then_some(n)
-            })
+    let mut invalid = HashSet::new();
+
+    normalize(input).for_each(|(a, b)| {
+        chunks(digits(a)).for_each(|(n, size)| {
+            let q = pow10((n - 1) * size);
+            let qqq: i64 = (0..n).map(|x| pow10(x * size)).sum();
+            let a_head = a / q;
+            let b_head = b / q;
+
+            (a_head..=b_head).for_each(|p| {
+                let id = p * qqq;
+                if a <= id && id <= b {
+                    invalid.insert(id);
+                }
+            });
         })
-        .sum()
+    });
+
+    invalid.iter().sum()
 }
 
 #[test]
