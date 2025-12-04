@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 pub static DIR: [(i64, i64); 8] = [
     (1, 0),
     (1, 1),
@@ -56,7 +58,7 @@ impl<T: Copy> Grid<T> {
             .flat_map(move |y| (0..self.size.0).map(move |x| (x, y, self.get(x, y).unwrap())))
     }
 
-    pub fn map<U>(&self, func: impl Fn(i64, i64, T) -> U) -> Grid<U> {
+    pub fn map<U>(&self, mut func: impl FnMut(i64, i64, T) -> U) -> Grid<U> {
         let data = self.iter().map(|(x, y, v)| func(x, y, v)).collect();
         Grid {
             size: self.size,
