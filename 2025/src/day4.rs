@@ -20,7 +20,8 @@ fn neighbours(grid: &Grid<char>, x: i64, y: i64) -> i64 {
 pub fn part1(input: &Input) -> Output {
     input
         .iter()
-        .filter_map(|(x, y, c)| (c == '@').then(|| neighbours(&input, x, y)))
+        .filter(|(_, _, c)| *c == '@')
+        .map(|(x, y, _)| neighbours(input, x, y))
         .filter(|x| *x < 4)
         .count() as i64
 }
@@ -29,7 +30,7 @@ pub fn part2(input: &Input) -> Output {
     let mut remove = VecDeque::new();
     let mut remaining = input.map(|x, y, c| {
         if c == '@' {
-            let n = neighbours(&input, x, y);
+            let n = neighbours(input, x, y);
             if n < 4 {
                 remove.push_back((x, y));
             }
