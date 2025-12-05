@@ -13,6 +13,7 @@ dependencies = [
  "itertools",
  "num",
  "petgraph",
+ "rangemap",
  "regex",
  "string-interner",
 ]
@@ -240,6 +241,12 @@ checksum = "b5b9d34b8991d19d98081b46eacdd8eb58c6f2b201139f7c5f643cc155a633af"
 dependencies = [
  "proc-macro2",
 ]
+
+[[package]]
+name = "rangemap"
+version = "1.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "acbbbbea733ec66275512d0b9694f34102e7d5406fdbe2ad8d21b28dce92887c"
 
 [[package]]
 name = "regex"
