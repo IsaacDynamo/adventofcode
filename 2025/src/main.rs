@@ -12,8 +12,8 @@ mod day2;
 mod day3;
 mod day4;
 mod day5;
-// mod day6;
-// mod day7;
+mod day6;
+mod day7;
 // mod day8;
 // mod day9;
 mod grid;
@@ -100,6 +100,30 @@ fn main() -> Result<()> {
             640,
             day::part2(&input),
             365804144481581
+        );
+    }
+
+    {
+        use day6 as day;
+        let input = day::parse(&read_file("input/day6/input.txt")?)?;
+        star!(
+            6,
+            day::part1(&input),
+            6725216329103,
+            day::part2(&input),
+            10600728112865
+        );
+    }
+
+    {
+        use day7 as day;
+        let input = day::parse(&read_file("input/day7/input.txt")?)?;
+        star!(
+            7,
+            day::part1(&input),
+            1662,
+            day::part2(&input),
+            40941112789504
         );
     }
 
