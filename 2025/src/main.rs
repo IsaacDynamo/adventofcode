@@ -4,9 +4,9 @@ use std::fs::File;
 use std::io::prelude::*;
 
 mod day1;
-// mod day10;
-// mod day11;
-// mod day12;
+mod day10;
+mod day11;
+mod day12;
 mod day2;
 
 mod day3;
@@ -14,8 +14,8 @@ mod day4;
 mod day5;
 mod day6;
 mod day7;
-// mod day8;
-// mod day9;
+mod day8;
+mod day9;
 mod grid;
 
 pub fn read_file(path: &str) -> Result<String> {
@@ -125,6 +125,54 @@ fn main() -> Result<()> {
             day::part2(&input),
             40941112789504
         );
+    }
+
+    {
+        use day8 as day;
+        let input = day::parse(&read_file("input/day8/input.txt")?)?;
+        star!(
+            8,
+            day::part1(&input, 1000),
+            79560,
+            day::part2(&input),
+            31182420
+        );
+    }
+
+    {
+        use day9 as day;
+        let input = day::parse(&read_file("input/day9/input.txt")?)?;
+        star!(
+            9,
+            day::part1(&input),
+            4777816465,
+            day::part2(&input),
+            1410501884
+        );
+    }
+
+    {
+        use day10 as day;
+        let input = day::parse(&read_file("input/day10/input.txt")?)?;
+        star!(10, day::part1(&input), 538, day::part2(&input), 20298);
+    }
+
+    {
+        use day11 as day;
+        let input = day::parse(&read_file("input/day11/input.txt")?)?;
+        star!(
+            11,
+            day::part1(&input),
+            428,
+            day::part2(&input),
+            331468292364745
+        );
+    }
+
+    {
+        use day12 as day;
+        let input = day::parse(&read_file("input/day12/input.txt")?)?;
+        star!(12, day::part1(&input), 448, day::part2(&input), 0);
     }
 
     Ok(())

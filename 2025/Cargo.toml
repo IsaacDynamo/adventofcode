@@ -14,3 +14,7 @@ petgraph = "0.6.5"
 regex = "1.11.1"
 string-interner = "0.18.0"
 rangemap = "1.7.0"
+nom = "8.0.0"
+good_lp = { version = "1.14.2", default-features = false, features = [
+    "minilp",
+] }

@@ -25,6 +25,13 @@ impl<T: Copy> Grid<T> {
         Grid { size, data }
     }
 
+    pub fn with(x: i64, y: i64, v: T) -> Self {
+        Grid {
+            size: (x, y),
+            data: vec![v; (x * y) as usize],
+        }
+    }
+
     pub fn size(&self) -> (i64, i64) {
         self.size
     }
